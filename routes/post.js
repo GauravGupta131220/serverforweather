@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 
-router.post('/admin', function(req, res) {
+router.post('/', function(req, res) {
 
     let userData = new Users();
     //res.send('post request handled succesfully!');
@@ -12,12 +12,13 @@ router.post('/admin', function(req, res) {
     userData.lastName = req.body.lastName;
     userData.age = req.body.age;
     userData.save((err, Data) => {
+
         if (err) {
-            //console.log("not found");
-            res.send('error');
+            console.log("not found");
+            return res.send('error');
         } else {
-        	//console.log(Data);
-            res.send(Data);
+        	console.log(Data);
+            res.json(Data);
         }
     })
 });

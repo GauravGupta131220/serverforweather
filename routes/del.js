@@ -3,8 +3,15 @@ const Users = require('../model/User');
 const router = express.Router();
 
 
-router.delete('/', function(req, res) {
-    res.send('delete request handled succesfully!');
+router.delete('/:id', function(req, res) {
+    Users.remove({_id:req.params.id},function(err,data){
+
+    	if(err){
+    			res.json(err);
+    	}else{
+    		res.json(data);
+    	}
+    })
 });
 
 

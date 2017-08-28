@@ -2,8 +2,8 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
-//const connect = mongoose.connect('mongodb://localhost/user');
-var db='mongodb://localhost/myData'
+const connect = mongoose.connect('mongodb://localhost:27017/user');
+//var db='mongodb://localhost/myData'
 
 
 
