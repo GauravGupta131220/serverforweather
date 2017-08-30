@@ -5,40 +5,44 @@ var App = require('../app.js')
 var supertest = require('supertest')
 var sinon = require('sinon')
 var model = require('../model/User.js')
-var modelStub = sinon.stub(model, 'find')
-var modeldeleteStub = sinon.stub(model, 'remove')
 var server = supertest.agent("http://localhost:3000")
-
 
 var request = require('supertest')
 var express = require('express')
 
 
 
-describe('testing the put method', function() {
-    it("check first name", function(done) {
+//testing the POST api
+let postStub = sinon.stub(model.prototype, 'save');
+describe('testing the post api', function() {
 
-        //calling ADD api
-        server
-            .post('/admin/')
-            .send({ firstName: "gaurav", lastName: "gupta", age: 22 })
-            .expect("Content-type", /json/)
-            .expect(200)
-            .end(function(err, res) {
-                if (err) return done(err)
-                expect(res.status).to.be.equal(200);
-                expect(res.body.firstName).to.be.equal("gaurav");
-                expect(res.body.age).to.be.equal(22);
-                done();
-            });
+    before(function() {
+        postStub.yields(null, {
+            "ok": 1,
+            "nModified": 1,
+            "n": 1
+        });
     });
 
+    it('response from json', function(done) {
+        request(App)
+            .post('/admin/')
+            .end(function(err, res) {
+                if (err) return done(err)
+                else {
+                    expect(res.body.ok).to.be.equal(1);
+                    done();
+                }
+            })
+    })
 })
 
 
-describe('GET /index/home', function() {
+//testing the GET api
+let getStub = sinon.stub(model, 'find')
+describe('testing the get api', function() {
     it('respond with json', function(done) {
-        modelStub.yields(null, [{ firstName: "gaurav", lastName: "gupta", age: 22 }])
+        getStub.yields(null, [{ firstName: "gaurav", lastName: "gupta", age: 22 }])
         request(App)
             .get('/index/home')
             .set('Accept', 'application/json')
@@ -55,22 +59,52 @@ describe('GET /index/home', function() {
 
 
 
-
-describe('delete', function() {
-
-    it('checking delete', function() {
-        modelStub.yields(null, [{ _id: "59a57e6705ec6c114919d1f5", firstName: "gaurav", lastName: "gupta", age: 22 }])
-        request(App)
-            .delete('/logout/' + "59a57e6705ec6c114919d199")
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                res.should.have.status(200)
-                res.body.should.be.a('array');
-                res.body.length.should.be.equal(0);
+//testing the DELETE api
+let deleteStub = sinon.stub(model, 'remove')
+describe('testing the delete api', function() {
+    before(function() {
+        deleteStub.withArgs({ '_id': 'abcdef' })
+            .yields(null, {
+                "ok": 1,
+                "nModified": 1,
+                "n": 1
             })
-    });
+    })
+
+    it('respond with json', function(done) {
+        request(App)
+            .delete('/logout/abcdef')
+            .end(function(err, res) {
+                if (err) return done(err)
+                expect(res.body.ok).to.be.equal(1)
+                done();
+            })
+    })
+
+})
 
 
-});
+//testing the PUT api
+let putStub = sinon.stub(model, 'update')
+describe('testing the put api', function() {
+    before(function() {
+        putStub.withArgs({ '_id': 'pqrst' }, { $set: { "firstName": "gaurav", "lastName": "gupta", "age": 22 } })
+            .yields(null, {
+                "ok": 1,
+                "nModified": 1,
+                "n": 1
+            })
+    })
+
+    it('respond with json', function(done) {
+        request(App)
+            .put('/user/user/pqrst')
+            .send({ "firstName": "gaurav", "lastName": "gupta", "age": 22 })
+            .end(function(err, res) {
+                if (err) return done(err)
+                expect(res.body.ok).to.be.equal(1)
+                done();
+            })
+    })
+
+})
