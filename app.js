@@ -2,7 +2,8 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
-const connect = mongoose.connect('mongodb://localhost:27017/user');
+const connect = mongoose.connect('mongodb://localhost:27017/weatherAngular');
+const cors=require('cors');
 //var db='mongodb://localhost/myData'
 
 
@@ -18,7 +19,7 @@ const app = express()
 
 
 
-
+app.use(cors());
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'));
@@ -47,5 +48,5 @@ app.use('/user', put);
 // });
 
 
-app.listen(3000);
+app.listen(3001);
 module.exports = app;

@@ -1,16 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const weatherDataSchema = new Schema({
 
-    firstName: String,
-    lastName: String,
-    age: Number
+    city: String,
+    date: String,
+    maxtemp: String,
+    mintemp: String
 
 });
 
-var Users = mongoose.model('Users', userSchema);
+var Weather = mongoose.model('weatherCollections', weatherDataSchema);
 
 //var user1 = new Users({ firstName: 'gaurav', lastName: 'gupta', age: 22 });
 
-module.exports = Users;
+module.exports = Weather;

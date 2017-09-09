@@ -1,17 +1,18 @@
 const express = require('express');
-const Users = require('../model/User');
+const Weather = require('../model/User');
 const router = express.Router();
 
 
 
 router.post('/', function(req, res) {
 
-    let userData = new Users();
+    let weatherData = new Weather();
     //res.send('post request handled succesfully!');
-    userData.firstName = req.body.firstName;
-    userData.lastName = req.body.lastName;
-    userData.age = req.body.age;
-    userData.save((err, Data) => {
+    weatherData.city = req.body.city;
+    weatherData.date = req.body.date;
+    weatherData.maxtemp = req.body.maxtemp;
+    weatherData.mintemp = req.body.mintemp;
+    weatherData.save((err, Data) => {
 
         if (err) {
             console.log("not found");
